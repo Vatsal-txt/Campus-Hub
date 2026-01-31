@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Hub - Preview Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'DM Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: linear-gradient(135deg, #1a1625 0%, #2d1b3d 100%);
+      color: white;
+      min-height: 100vh;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(139, 92, 246, 0.3);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(139, 92, 246, 0.5);
+    }
+
+    .auth-screen {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .auth-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 1.5rem;
+      padding: 3rem;
+      max-width: 450px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(45deg, #00f2fe, #4facfe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 0.875rem;
+      margin-bottom: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.75rem;
+      color: white;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .input-field:focus {
+      border-color: #4facfe;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .input-field::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      border: none;
+      border-radius: 0.75rem;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+    }
+
+    .link {
+      background: none;
+      border: none;
+      color: #4facfe;
+      cursor: pointer;
+      font-size: 0.9rem;
+      text-decoration: underline;
+      font-family: 'Space Mono', monospace;
+      margin-top: 1.5rem;
+      display: block;
+      text-align: center;
+    }
+
+    .dashboard {
+      display: none;
+    }
+
+    .dashboard.active {
+      display: block;
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 1.25rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, #a78bfa, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .role-badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      background: #8b5cf6;
+      border-radius: 1rem;
+    }
+
+    .main-layout {
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .sidebar {
+      width: 250px;
+      padding: 2rem 1.5rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      min-height: calc(100vh - 80px);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-item.active {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #a78bfa;
+      font-weight: 600;
+    }
+
+    .nav-item:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .content {
+      flex: 1;
+      padding: 2rem;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .content-title {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .btn-create {
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+      border: none;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+
+    .btn-create:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .event-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .event-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-approved {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid #10b981;
+      color: #6ee7b7;
+    }
+
+    .status-draft {
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid #fbbf24;
+      color: #fcd34d;
+    }
+
+    .card-description {
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .card-meta {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .demo-note {
+      background: rgba(79, 172, 254, 0.1);
+      border: 1px solid rgba(79, 172, 254, 0.3);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .demo-note h3 {
+      color: #4facfe;
+      margin-bottom: 0.5rem;
+    }
+
+    .demo-note p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Authentication Screen -->
+  <div class="auth-screen" id="authScreen">
+    <div class="auth-card">
+      <h1 class="title">Campus Hub</h1>
+      <p class="subtitle">Unified Resource & Event Management</p>
+
+      <div class="demo-note" style="margin-top: 2rem;">
+        <h3>🎨 Design Preview</h3>
+        <p>This is a static preview of the UI design. The full React application includes all interactive features, real-time updates, and backend integration.</p>
+      </div>
+
+      <form id="authForm">
+        <input type="email" class="input-field" placeholder="Email" required>
+        <input type="password" class="input-field" placeholder="Password" required>
+        <button type="submit" class="btn-primary">Sign In</button>
+      </form>
+
+      <button class="link" onclick="showDashboard()">Preview Dashboard →</button>
+    </div>
+  </div>
+
+  <!-- Dashboard Screen -->
+  <div class="dashboard" id="dashboard">
+    <header>
+      <div class="header-content">
+        <div class="logo">Campus Hub</div>
+        <div class="user-badge">
+          <span>Admin User</span>
+          <span class="role-badge">admin</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-layout">
+      <nav class="sidebar">
+        <div class="nav-item active">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Events</span>
+        </div>
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span>Resources</span>
+        </div>
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Clubs</span>
+        </div>
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span>Messages</span>
+        </div>
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Analytics</span>
+        </div>
+      </nav>
+
+      <main class="content">
+        <div class="demo-note">
+          <h3>📊 Interactive Dashboard Preview</h3>
+          <p>This demonstrates the UI design. The full application includes dynamic data loading, filtering, real-time updates, and complete CRUD operations.</p>
+        </div>
+
+        <div class="content-header">
+          <h2 class="content-title">Events</h2>
+          <button class="btn-create">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Create Event
+          </button>
+        </div>
+
+        <div class="cards-grid">
+          <div class="event-card">
+            <div class="card-header">
+              <h3 class="card-title">Tech Fest 2024</h3>
+              <span class="status-badge status-approved">approved</span>
+            </div>
+            <p class="card-description">
+              Annual technology festival featuring workshops, hackathons, and tech talks from industry experts.
+            </p>
+            <div class="card-meta">
+              <span>📅 March 15, 2024</span>
+              <span>💰 ₹50,000</span>
+            </div>
+          </div>
+
+          <div class="event-card">
+            <div class="card-header">
+              <h3 class="card-title">Cultural Night</h3>
+              <span class="status-badge status-approved">approved</span>
+            </div>
+            <p class="card-description">
+              A celebration of diverse cultures through music, dance, and food from around the world.
+            </p>
+            <div class="card-meta">
+              <span>📅 April 5, 2024</span>
+              <span>💰 ₹30,000</span>
+            </div>
+          </div>
+
+          <div class="event-card">
+            <div class="card-header">
+              <h3 class="card-title">Sports Tournament</h3>
+              <span class="status-badge status-draft">draft</span>
+            </div>
+            <p class="card-description">
+              Inter-college sports tournament featuring cricket, football, basketball, and badminton.
+            </p>
+            <div class="card-meta">
+              <span>📅 May 20, 2024</span>
+              <span>💰 ₹75,000</span>
+            </div>
+          </div>
+
+          <div class="event-card">
+            <div class="card-header">
+              <h3 class="card-title">Workshop: AI & ML</h3>
+              <span class="status-badge status-approved">approved</span>
+            </div>
+            <p class="card-description">
+              Hands-on workshop covering fundamentals of Artificial Intelligence and Machine Learning.
+            </p>
+            <div class="card-meta">
+              <span>📅 March 25, 2024</span>
+              <span>💰 ₹15,000</span>
+            </div>
+          </div>
+
+          <div class="event-card">
+            <div class="card-header">
+              <h3 class="card-title">Career Fair</h3>
+              <span class="status-badge status-approved">approved</span>
+            </div>
+            <p class="card-description">
+              Meet top recruiters and explore career opportunities with leading companies across industries.
+            </p>
+            <div class="card-meta">
+              <span>📅 April 12, 2024</span>
+              <span>💰 ₹40,000</span>
+            </div>
+          </div>
+
+          <div class="event-card">
+            <div class="card-header">
+              <h3 class="card-title">Blood Donation Camp</h3>
+              <span class="status-badge status-draft">draft</span>
+            </div>
+            <p class="card-description">
+              Social initiative to encourage blood donation and create awareness about its importance.
+            </p>
+            <div class="card-meta">
+              <span>📅 March 30, 2024</span>
+              <span>💰 ₹5,000</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function showDashboard() {
+      document.getElementById('authScreen').style.display = 'none';
+      document.getElementById('dashboard').classList.add('active');
+    }
+
+    document.getElementById('authForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+  </script>
+</body>
+</html>
